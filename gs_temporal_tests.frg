@@ -1,71 +1,188 @@
 #lang forge/temporal
-open "gs.frg"
+// open "gs.frg"
 open "gs_temporal.frg"
 option test_keep last
 
-test expect {
-  // so these work
-  {gs_transition} for exactly 2 Proposer, exactly 2 Receiver is sat
-  {init} for exactly 2 Proposer, exactly 2 Receiver is sat
-  // first step works
-  {init and gs_transition} for exactly 2 Proposer, exactly 2 Receiver is sat
+---- HELPER FUNCTIONS -----
+
+pred wellformed_matches {
+  // a proposer can't match to another proposer
+  all p1, p2: Proposer | { not p1.match = p2 }
+  // a receiver can't match to another receiver
+  // this should also rule out the case that someone matches themselves
+  all r1, r2: Receiver | { not r1.match = r2 }
+  // two people cannot match to the same person
+  all disj p1, p2: Person | { p1.match != p2.match }
+  // a match needs to be reciprocated
+  all p1, p2: Person | {(p1.match = p2) => (p2.match = p1)}
+}
+
+pred all_matched {
+  all p: Person | {
+    p.match != none
+  }
+  wellformed_matches
+}
+
+pred noBetterMatch {
+  no p: Proposer, r: Receiver | {
+    // such that they are not currently matched
+    p.match != r
+    r.match != p
+    // and would prefer each other
+    p.p_preferences[r] > p.p_preferences[p.match]
+    r.r_preferences[p] > r.r_preferences[r.match]
+  }
 }
 
 /*
-test expect {
-  {gs_traces} for exactly 2 Proposer, exactly 2 Receiver is sat
-  {gs_traces} for exactly 4 Proposer, exactly 4 Receiver is sat
-  {gs_traces} for exactly 5 Proposer, exactly 5 Receiver is sat
-  // test that once you've matched everyone, it's stable
-  // gs_traces implies { eventually always do_nothing
-  // } is checked ? 
 
+test expect {
+  // so these work
+  check_transition: {gs_transition} for exactly 2 Proposer, exactly 2 Receiver is sat
+  check_init: {init} for exactly 2 Proposer, exactly 2 Receiver is sat
+  // first step works
+  check_first_step: {init and gs_transition} for exactly 2 Proposer, exactly 2 Receiver is sat
+  two_pairs: {gs_traces} for exactly 2 Proposer, exactly 2 Receiver is sat
+  three_pairs: {gs_traces} for exactly 3 Proposer, exactly 3 Receiver is sat
+  four_pairs: {gs_traces} for exactly 4 Proposer, exactly 4 Receiver is sat
+  // five_pairs: {gs_traces} for exactly 5 Proposer, exactly 5 Receiver is sat
+  // six_pairs: {gs_traces} for exactly 6 Proposer, exactly 6 Receiver is sat
+  // these take a REALLY LONG TIME to run and somehow end up unsat? 
+  // so I tried testing for unsat
+  // which worked??? 
+}
+
+test expect {
+  // test that once you've matched everyone, it's stable
   // is there a case where the algorithm does not produce a stable match?
   // note: matched includes wellformed_matches
-  problem_solved: {gs_traces => (eventually always do_nothing)} for exactly 4 Proposer, exactly 4 Receiver is checked
+  problem_solved: {gs_traces => (eventually always all_matched_and_do_nothing)} for exactly 3 Proposer, exactly 3 Receiver is checked
   // matched isn't under any temporal constraints
   // so it would be false because it would expect matched from the start
-  all_matched: {gs_traces => {always (do_nothing iff matched)}} for exactly 4 Proposer, exactly 4 Receiver is checked
-  stable_matches: {
-    (always do_nothing) implies noBetterMatch
-  } for exactly 4 Proposer, exactly 4 Receiver is checked
-  no_stable_match: {(always do_nothing) and (no match)} for exactly 4 Proposer, exactly 4 Receiver is unsat
+  all_matched_test: {gs_traces => {always (all_matched_and_do_nothing iff all_matched)}} for exactly 3 Proposer, exactly 3 Receiver is checked
+  stable_matches: {gs_traces implies {
+    (always all_matched_and_do_nothing) implies noBetterMatch
+  }} for exactly 3 Proposer, exactly 3 Receiver is checked
+  no_stable_match: {(always all_matched_and_do_nothing) and (no match)} for exactly 3 Proposer, exactly 3 Receiver is unsat
+}
+
+test expect {
   // I'm curious about if there are unbalanced numbers
-  {gs_traces and (eventually always (do_nothing and matched and noBetterMatch))} for exactly 4 Proposer, exactly 4 Receiver is sat
-  {gs_traces and (eventually always (do_nothing and noBetterMatch))} for exactly 4 Proposer, exactly 3 Receiver is unsat //???
+  balanced_nums: {gs_traces and (eventually always (all_matched_and_do_nothing and all_matched and noBetterMatch))} for exactly 3 Proposer, exactly 3 Receiver is sat
+  // {gs_traces and (eventually always (all_matched_and_do_nothing and noBetterMatch))} for exactly 3 Proposer, exactly 2 Receiver is unsat //???
   // our model... our gs_transition is predicated on the idea there is a best match
-  {gs_traces and (eventually always (do_nothing and noBetterMatch))} for exactly 3 Proposer, exactly 4 Receiver is sat
-  // this won't work with how we've written do_nothing --- since that requires everyone to have some match
+  // {gs_traces and (eventually always (all_matched_and_do_nothing and noBetterMatch))} for exactly 2 Proposer, exactly 3 Receiver is sat
+  // this won't work with how we've written all_matched_and_do_nothing --- since that requires everyone to have some match
   // When 4 Proposer, 3 Receiver:
   // some unmatched: Proposer | all p: (Person - unmatched) | { some p.match } 
   // cardinality? 
   // # of matches = # of smallest of proposers and receivers
-  // 
+  //   
+}
 
+*/
 
+/* 
+pred swap {
+  some disj p1, p2: Proposer | some r: Receiver | {
+    // should we also check for the preferences here?
+    -- state 1 -- 
+    p1.match = r
+    p2.match = none
+    r.match = p1
+    
+    -- state 2 -- 
+    p1.match = none
+    p2.match = r
+    r.match = p2
+    // all other: Person - (p1 + p2 + r) | {
+    // other.match' = other.match
+  }
+}
+
+test expect {
+  // TODO: how to visualize the two states? 
   -- so far we've only seen cases where the preferences aren't broken ... 
   -- ...so try to find a case where an engagement gets broken
-  engagement_breaks : {
-    some disj p1, p2: Proposer | some r: Receiver | {
-      // should we also check for the preferences here?
+  // engagement_breaks : { gs_traces => {
+  //   some disj p1, p2: Proposer | some r: Receiver | {
+  //     // should we also check for the preferences here?
+  //     -- state 1 -- 
+  //     p1.match = r
+  //     p2.match = none
+  //     r.match = p1
+      
+  //     -- state 2 -- 
+  //     p1.match = none
+  //     p2.match = r
+  //     r.match = p2
+  //     // all other: Person - (p1 + p2 + r) | {
+  //     // other.match' = other.match
+  //   }
+  // }} for exactly 4 Proposer, exactly 4 Receiver is sat
 
-      -- state 1 -- 
-      p1.match = r
-      p2.match = none
-      r.match = p1
-      
-      -- state 2 -- 
-      p1.match = none
-      p2.match = r
-      r.match = p2
-      
-      // all other: Person - (p1 + p2 + r) | {
-      // other.match' = other.match
-    }
-  } for exactly 4 Proposer, exactly 4 Receiver is sat
+  // engagement_breaks : { 
+  //   init
+  //   gs_transition
+  //   swap
+  //   gs_transition
+  //   gs_transition or all_matched_and_do_nothing
+  //   gs_transition or all_matched_and_do_nothing
+  //   all_matched_and_do_nothing
+  // } for exactly 4 Proposer, exactly 4 Receiver is sat
+
+  // engagement_breaks : { 
+  //   gs_traces
+  //   gs_traces
+  //   swap
+  //   gs_traces 
+  //   gs_traces or all_matched_and_do_nothing
+  //   gs_traces or all_matched_and_do_nothing
+  //   all_matched_and_do_nothing
+  // } for exactly 4 Proposer, exactly 4 Receiver is sat
+
+}
+*/
+
+
+
+test expect {
   -- is the case where every proposer gets their first choice and ever receiver their last?
-  proposer_biased: {
-    // every proposer has their first choice
+  // this passes a lot
+  // proposer_bias: {gs_traces => {
+  //   // every proposer has their first choice
+  //   all p: Proposer, r: Receiver | {
+  //     p.p_preferences[p.match] >= p.p_preferences[r]
+  //     r.r_preferences[r.match] <= r.r_preferences[p]
+  //   }
+  // }} for exactly 3 Proposer, exactly 3 Receiver is sat
+  proposer_bias: {
+    gs_traces
+    gs_traces
+    gs_traces or all_matched_and_do_nothing
+    gs_traces or all_matched_and_do_nothing
+    gs_traces or all_matched_and_do_nothing
+    gs_traces or all_matched_and_do_nothing
+    all_matched_and_do_nothing
+    all_matched
+    noBetterMatch
+    all p: Proposer, r: Receiver | {
+      p.p_preferences[p.match] >= p.p_preferences[r]
+      r.r_preferences[r.match] <= r.r_preferences[p]
+    }
+  } for exactly 3 Proposer, exactly 3 Receiver is sat
+
+  proposer_bias2: {
+    gs_traces
+    gs_traces
+    gs_traces or all_matched_and_do_nothing
+    gs_traces or all_matched_and_do_nothing
+    gs_traces or all_matched_and_do_nothing
+    gs_traces or all_matched_and_do_nothing
+    all_matched_and_do_nothing
+    all_matched
+    noBetterMatch
     all p: Proposer, r: Receiver | {
       p.p_preferences[p.match] >= p.p_preferences[r]
       r.r_preferences[r.match] <= r.r_preferences[p]
@@ -73,12 +190,55 @@ test expect {
   } for exactly 4 Proposer, exactly 4 Receiver is sat
   
   -- is the reverse possible?
-  receiver_biased : {
-    // every proposer has their first choice
+  // this never passes
+  // but the visualizer also never shows what I mean (there's never full matches)
+  // receiver_biased : {gs_traces => {
+  //   // every proposer has their first choice
+  //   all p: Proposer, r: Receiver | {
+  //     p.p_preferences[p.match] <= p.p_preferences[r]
+  //     r.r_preferences[r.match] >= r.r_preferences[p]
+  //   }
+  // }} for exactly 3 Proposer, exactly 3 Receiver is unsat
+
+  // receiver_bias: {gs_traces => {(always all_matched_and_do_nothing) => { (matched and noBetterMatch) => {
+  //   all p: Proposer, r: Receiver | {
+  //     p.p_preferences[p.match] <= p.p_preferences[r]
+  //     r.r_preferences[r.match] >= r.r_preferences[p]
+  //   }
+  // }}}} for exactly 3 Proposer, exactly 3 Receiver is unsat
+
+  // hard coding it worked, apparently
+  receiver_bias: {
+    gs_traces
+    gs_traces
+    gs_traces or all_matched_and_do_nothing
+    gs_traces or all_matched_and_do_nothing
+    gs_traces or all_matched_and_do_nothing
+    gs_traces or all_matched_and_do_nothing
+    all_matched_and_do_nothing
+    all_matched
+    noBetterMatch
+    all p: Proposer, r: Receiver | {
+      p.p_preferences[p.match] <= p.p_preferences[r]
+      r.r_preferences[r.match] >= r.r_preferences[p]
+    }
+  } for exactly 3 Proposer, exactly 3 Receiver is unsat
+
+  receiver_bias2: {
+    gs_traces
+    gs_traces
+    gs_traces or all_matched_and_do_nothing
+    gs_traces or all_matched_and_do_nothing
+    gs_traces or all_matched_and_do_nothing
+    gs_traces or all_matched_and_do_nothing
+    all_matched_and_do_nothing
+    all_matched
+    noBetterMatch
     all p: Proposer, r: Receiver | {
       p.p_preferences[p.match] <= p.p_preferences[r]
       r.r_preferences[r.match] >= r.r_preferences[p]
     }
   } for exactly 4 Proposer, exactly 4 Receiver is unsat
+
 }
-*/
+

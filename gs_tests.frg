@@ -50,17 +50,17 @@ pred nonunique {
 
 test expect {
   // someone doesn't have a match
-  missing_match: {gale_shapley and missing_match} for exactly 5 Proposer, exactly 5 Receiver is unsat
+  missing_match_test: {gale_shapley and missing_match} for exactly 5 Proposer, exactly 5 Receiver is unsat
   // no one has a match
-  no_matches: {gale_shapley and no_matches} for exactly 5 Proposer, exactly 5 Receiver is unsat
+  no_matches_test: {gale_shapley and no_matches} for exactly 5 Proposer, exactly 5 Receiver is unsat
   // someone matched themself
-  self_match: {gale_shapley and self_match}for exactly 5 Proposer, exactly 5 Receiver is unsat
+  self_match_test: {gale_shapley and self_match}for exactly 5 Proposer, exactly 5 Receiver is unsat
   // a proposer matched to another proposer
-  r_matched_r: {gale_shapley and r_matched_r} for exactly 5 Proposer, exactly 5 Receiver is unsat
+  p_matched_p_test: {gale_shapley and p_matched_p} for exactly 5 Proposer, exactly 5 Receiver is unsat
   // a receiver matched to another receiver
-  r_matched_r: {gale_shapley and r_matched_r} for exactly 5 Proposer, exactly 5 Receiver is unsat
+  r_matched_r_test: {gale_shapley and r_matched_r} for exactly 5 Proposer, exactly 5 Receiver is unsat
   // two people prefer each other to their current partners
-  better_match: {gale_shapley and better_match} for exactly 5 Proposer, exactly 5 Receiver is unsat
+  better_match_test: {gale_shapley and better_match} for exactly 5 Proposer, exactly 5 Receiver is unsat
   // two people matched to one person
-  nonunique: {gale_shapley and nonunique} for exactly 5 Proposer, exactly 5 Receiver is unsat
+  nonunique_test: {gale_shapley and nonunique} for exactly 5 Proposer, exactly 5 Receiver is unsat
 }
