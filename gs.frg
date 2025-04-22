@@ -74,6 +74,7 @@ pred gale_shapley {
   noBetterMatch
 }
 
-run {
-  gale_shapley
-} for exactly 2 Proposer, exactly 2 Receiver
+// run {
+//   gale_shapley
+// } for exactly 2 Proposer, exactly 2 Receiver
+

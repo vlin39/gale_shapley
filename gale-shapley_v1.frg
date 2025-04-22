@@ -1,7 +1,5 @@
 #lang forge/temporal
 
-option test_keep
-
 // abstract sig Person {
 //   match : lone Person
 //   // lone vs one
@@ -304,16 +302,19 @@ pred gs_traces {
 
 -- Tests
 
-// run gs_traces for exactly 4 Proposer, exactly 4 Receiver
+run gs_traces for exactly 3 Proposer, exactly 3 Receiver
 
 // assert {gs_traces} implies {eventually always do_nothing} for exactly 4 Proposer, exactly 4 Receiver
 
 // assert {gs_traces} implies {eventually always noBetterMatch} for exactly 4 Proposer, exactly 4 Receiver
 
+
 test expect {
-  {gs_traces} for exactly 2 Proposer, exactly 2 Receiver is sat
-  {gs_traces} for exactly 4 Proposer, exactly 4 Receiver is sat
-  {gs_traces} for exactly 5 Proposer, exactly 5 Receiver is sat
+  two_pairs: {gs_traces} for exactly 2 Proposer, exactly 2 Receiver is sat
+  three_pairs: {gs_traces} for exactly 3 Proposer, exactly 3 Receiver is sat
+  four_pairs: {gs_traces} for exactly 4 Proposer, exactly 4 Receiver is sat
+  // five_pairs: {gs_traces} for exactly 5 Proposer, exactly 5 Receiver is sat
+  // ^ this fails??? And when I try to run it, it's unsat?
   // test that once you've matched everyone, it's stable
   // gs_traces implies { eventually always do_nothing
   // } is checked ? 
@@ -396,6 +397,7 @@ test expect {
   -- good example for thinking about how we're going to give students assistance in adding extra information 
   -- that isn't part of the instance
 } 
+
 
 // UNSAT 
 

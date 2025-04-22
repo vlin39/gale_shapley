@@ -48,7 +48,7 @@ pred nonunique {
   }
 }
 
-test expect{
+test expect {
   // someone doesn't have a match
   missing_match: {gale_shapley and missing_match} for exactly 5 Proposer, exactly 5 Receiver is unsat
   // no one has a match

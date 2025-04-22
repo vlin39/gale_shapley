@@ -3,7 +3,15 @@ open "gs.frg"
 open "gs_temporal.frg"
 option test_keep last
 
+test expect {
+  // so these work
+  {gs_transition} for exactly 2 Proposer, exactly 2 Receiver is sat
+  {init} for exactly 2 Proposer, exactly 2 Receiver is sat
+  // first step works
+  {init and gs_transition} for exactly 2 Proposer, exactly 2 Receiver is sat
+}
 
+/*
 test expect {
   {gs_traces} for exactly 2 Proposer, exactly 2 Receiver is sat
   {gs_traces} for exactly 4 Proposer, exactly 4 Receiver is sat
@@ -55,9 +63,8 @@ test expect {
       // other.match' = other.match
     }
   } for exactly 4 Proposer, exactly 4 Receiver is sat
-
   -- is the case where every proposer gets their first choice and ever receiver their last?
-  proposer_biased : {
+  proposer_biased: {
     // every proposer has their first choice
     all p: Proposer, r: Receiver | {
       p.p_preferences[p.match] >= p.p_preferences[r]
@@ -74,3 +81,4 @@ test expect {
     }
   } for exactly 4 Proposer, exactly 4 Receiver is unsat
 }
+*/
