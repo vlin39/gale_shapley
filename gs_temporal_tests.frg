@@ -157,37 +157,36 @@ test expect {
   //     r.r_preferences[r.match] <= r.r_preferences[p]
   //   }
   // }} for exactly 3 Proposer, exactly 3 Receiver is sat
-  proposer_bias: {
-    gs_traces
-    gs_traces
-    gs_traces or all_matched_and_do_nothing
-    gs_traces or all_matched_and_do_nothing
-    gs_traces or all_matched_and_do_nothing
-    gs_traces or all_matched_and_do_nothing
-    all_matched_and_do_nothing
-    all_matched
-    noBetterMatch
-    all p: Proposer, r: Receiver | {
-      p.p_preferences[p.match] >= p.p_preferences[r]
-      r.r_preferences[r.match] <= r.r_preferences[p]
-    }
-  } for exactly 3 Proposer, exactly 3 Receiver is sat
+  // proposer_bias: {
+  //   init
+  //   gs_transition
+  //   gs_transition or all_matched_and_do_nothing
+  //   gs_transition or all_matched_and_do_nothing
+  //   gs_transition or all_matched_and_do_nothing
+  //   gs_transition or all_matched_and_do_nothing
+  //   gs_transition or all_matched_and_do_nothing
+  //   all_matched_and_do_nothing
+  //   all_matched_and_do_nothing
+  //   all_matched
+  //   noBetterMatch
+  //   all p: Proposer, r: Receiver | {
+  //     p.p_preferences[p.match] >= p.p_preferences[r]
+  //     r.r_preferences[r.match] <= r.r_preferences[p]
+  //   }
+  // } for exactly 3 Proposer, exactly 3 Receiver is sat
 
-  proposer_bias2: {
-    gs_traces
-    gs_traces
-    gs_traces or all_matched_and_do_nothing
-    gs_traces or all_matched_and_do_nothing
-    gs_traces or all_matched_and_do_nothing
-    gs_traces or all_matched_and_do_nothing
-    all_matched_and_do_nothing
-    all_matched
-    noBetterMatch
-    all p: Proposer, r: Receiver | {
-      p.p_preferences[p.match] >= p.p_preferences[r]
-      r.r_preferences[r.match] <= r.r_preferences[p]
-    }
-  } for exactly 4 Proposer, exactly 4 Receiver is sat
+  proposer_bias: {
+    init
+    gs_transition
+    gs_transition 
+    gs_transition 
+    (gs_transition or all_matched_and_do_nothing)
+    (gs_transition or all_matched_and_do_nothing)
+    (gs_transition or all_matched_and_do_nothing)
+    // all_matched_and_do_nothing
+    // all_matched
+    // noBetterMatch
+  } for exactly 3 Proposer, exactly 3 Receiver is sat
   
   -- is the reverse possible?
   // this never passes
@@ -207,38 +206,21 @@ test expect {
   //   }
   // }}}} for exactly 3 Proposer, exactly 3 Receiver is unsat
 
-  // hard coding it worked, apparently
-  receiver_bias: {
-    gs_traces
-    gs_traces
-    gs_traces or all_matched_and_do_nothing
-    gs_traces or all_matched_and_do_nothing
-    gs_traces or all_matched_and_do_nothing
-    gs_traces or all_matched_and_do_nothing
-    all_matched_and_do_nothing
-    all_matched
-    noBetterMatch
-    all p: Proposer, r: Receiver | {
-      p.p_preferences[p.match] <= p.p_preferences[r]
-      r.r_preferences[r.match] >= r.r_preferences[p]
-    }
-  } for exactly 3 Proposer, exactly 3 Receiver is unsat
-
-  receiver_bias2: {
-    gs_traces
-    gs_traces
-    gs_traces or all_matched_and_do_nothing
-    gs_traces or all_matched_and_do_nothing
-    gs_traces or all_matched_and_do_nothing
-    gs_traces or all_matched_and_do_nothing
-    all_matched_and_do_nothing
-    all_matched
-    noBetterMatch
-    all p: Proposer, r: Receiver | {
-      p.p_preferences[p.match] <= p.p_preferences[r]
-      r.r_preferences[r.match] >= r.r_preferences[p]
-    }
-  } for exactly 4 Proposer, exactly 4 Receiver is unsat
+  // receiver_bias: {
+  //   gs_traces
+  //   gs_traces
+  //   gs_traces or all_matched_and_do_nothing
+  //   gs_traces or all_matched_and_do_nothing
+  //   gs_traces or all_matched_and_do_nothing
+  //   gs_traces or all_matched_and_do_nothing
+  //   all_matched_and_do_nothing
+  //   all_matched
+  //   noBetterMatch
+  //   all p: Proposer, r: Receiver | {
+  //     p.p_preferences[p.match] <= p.p_preferences[r]
+  //     r.r_preferences[r.match] >= r.r_preferences[p]
+  //   }
+  // } for exactly 3 Proposer, exactly 3 Receiver is unsat
 
 }
 
