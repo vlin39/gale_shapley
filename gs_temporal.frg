@@ -78,9 +78,8 @@ pred guard_match[p: Proposer, best_match : Receiver] {
       }
   } | 
   best_match = {
-    r1 : Receiver | {
-      all r2 : Receiver {
-        r1 + r2 in (free_receivers + would_prefer)
+    r1 : (free_receivers + would_prefer) | {
+      all r2 : (free_receivers + would_prefer) | {
         p.p_preferences[r1] >= p.p_preferences[r2]
       }
     }
@@ -242,6 +241,34 @@ pred betterMatch {
     r.match != p
     // and would prefer each other
     (p.p_preferences[r] > p.p_preferences[p.match]) and (r.r_preferences[p] > r.r_preferences[r.match])
+  }
+}
+
+pred sadReceivers {
+  all p: Proposer, r: Receiver | {
+    some r.match 
+    r.r_preferences[r.match] <= r.r_preferences[p]
+  }
+}
+
+pred sadProposers {
+  all p: Proposer, r: Receiver | {
+    some p.match 
+    p.p_preferences[p.match] <= p.p_preferences[r]
+  }
+}
+
+pred happyReceivers {
+  all p: Proposer, r: Receiver | {
+    some r.match 
+    r.r_preferences[r.match] >= r.r_preferences[p]
+  }
+}
+
+pred happyProposers {
+  all p: Proposer, r: Receiver | {
+    some p.match 
+    p.p_preferences[p.match] >= p.p_preferences[r]
   }
 }
 

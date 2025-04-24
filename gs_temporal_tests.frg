@@ -5,7 +5,7 @@ option test_keep last
 
 ---- HELPER FUNCTIONS -----
 
-/*
+
 test expect {
   // so these work
   check_transition: {gs_transition} for exactly 2 Proposer, exactly 2 Receiver is sat
@@ -21,7 +21,7 @@ test expect {
   // so I tried testing for unsat
   // which worked??? 
 }
-*/
+
 
 test expect {
   // test that once you've matched everyone, it's stable
@@ -40,6 +40,8 @@ test expect {
   no_stable_match: {(always all_matched_and_do_nothing) and (no match)} for exactly 3 Proposer, exactly 3 Receiver is unsat
 }
 
+
+
 test expect {
   // I'm curious about if there are unbalanced numbers
   balanced_nums: {gs_traces and (eventually always (do_nothing and all_matched and noBetterMatch))} for exactly 3 Proposer, exactly 3 Receiver is sat
@@ -48,15 +50,17 @@ test expect {
   more_receivers: {gs_traces and (eventually always (do_nothing and noBetterMatch))} for exactly 2 Proposer, exactly 3 Receiver is sat
 }
 
-
-// TODO
-/*
 test expect {
   // TODO: how to visualize the two states? 
   -- so far we've only seen cases where the preferences aren't broken ... 
   -- ...so try to find a case where an engagement gets broken
-  engagement_breaks : {
-    some disj p1, p2: Proposer | some r: Receiver | {
+  engagement_breaks: { 
+    // order doesn't matter 
+    // normally in index 0 / state 0, and you can only get out by using temporal operators
+    gs_traces
+    // this evaluates from the first state
+    // so we specify that it doesn't have to be from the first state using eventually
+    eventually {some disj p1, p2: Proposer | some r: Receiver | {
       // should we also check for the preferences here?
       -- state 1 -- 
       p1.match = r
@@ -69,52 +73,40 @@ test expect {
       r.match' = p2
       // all other: Person - (p1 + p2 + r) | {
       // other.match' = other.match
-    }
+    }}
   } for exactly 3 Proposer, exactly 3 Receiver is sat
-
-  // example diagonalPasses is {wellformed} for {
-  //   Board = `Board0
-  //   X = `X0 
-  //   O = `O0
-  //   A = `A0
-  //   B = `B0
-  //   C = `C0
-  //   `Board0.board = (0,0)->`X + (1,1)->`X + (2,2)->`X
-  // }
-
 }
-*/
 
-// TODO 
-/*
 test expect {
   -- is the case where every proposer gets their first choice and ever receiver their last?
   // this passes a lot
-  proposer_bias: {gs_traces => {
+  proposer_bias: {
+    gs_traces
+    eventually {
     // every proposer has their first choice
-    all p: Proposer, r: Receiver | {
-      p.p_preferences[p.match] >= p.p_preferences[r]
-      r.r_preferences[r.match] <= r.r_preferences[p]
+    // every receiver gets their last choice
+      all p: Proposer, r: Receiver | {
+        some p.match
+        some r.match
+        p.p_preferences[p.match] >= p.p_preferences[r]
+        r.r_preferences[r.match] <= r.r_preferences[p]
+      }
     }
-  }} for exactly 3 Proposer, exactly 3 Receiver is sat
+  } for exactly 3 Proposer, exactly 3 Receiver is sat
   
   -- is the reverse possible?
-  // this never passes
-  // but the visualizer also never shows what I mean (there's never full matches)
-  // receiver_biased : {gs_traces => {
-  //   // every proposer has their first choice
-  //   all p: Proposer, r: Receiver | {
-  //     p.p_preferences[p.match] <= p.p_preferences[r]
-  //     r.r_preferences[r.match] >= r.r_preferences[p]
-  //   }
-  // }} for exactly 3 Proposer, exactly 3 Receiver is unsat
-
-  // receiver_bias: {gs_traces => {(always all_matched_and_do_nothing) => { (matched and noBetterMatch) => {
-  //   all p: Proposer, r: Receiver | {
-  //     p.p_preferences[p.match] <= p.p_preferences[r]
-  //     r.r_preferences[r.match] >= r.r_preferences[p]
-  //   }
-  // }}}} for exactly 3 Proposer, exactly 3 Receiver is unsat
-
+  receiver_bias: {
+    gs_traces
+    eventually {
+    // every proposer has their first choice
+    // every receiver gets their last choice
+      all p: Proposer, r: Receiver | {
+        some p.match
+        some r.match
+        p.p_preferences[p.match] <= p.p_preferences[r]
+        r.r_preferences[r.match] >= r.r_preferences[p]
+      }
+    }
+  } for exactly 3 Proposer, exactly 3 Receiver is unsat
 }
-*/
+
