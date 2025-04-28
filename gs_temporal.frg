@@ -206,7 +206,7 @@ pred gs_traces {
   always (gs_transition or do_nothing)
 }
 
-// run gs_traces for exactly 3 Proposer, exactly 3 Receiver
+run gs_traces for exactly 3 Proposer, exactly 3 Receiver
 
 
 // these run
