@@ -206,15 +206,23 @@ pred gs_traces {
   always (gs_transition or do_nothing)
 }
 
-run gs_traces for exactly 3 Proposer, exactly 3 Receiver
 
+// minimal number of states is 1 + num matches
+// how to specify num of states? 
+// not sure if there's a way to specify that two states can't be the same
+
+option max_tracelength 8
+option min_tracelength 6
+
+// always {match != match’ }
+// three: run gs_traces for exactly 3 Proposer, exactly 3 Receiver
+five: run gs_traces for exactly 5 Proposer, exactly 5 Receiver
 
 // these run
 // run gs_traces4 for exactly 1 Proposer, exactly 1 Receiver
 // run gs_traces4 for exactly 2 Proposer, exactly 2 Receiver
 // run gs_traces4 for exactly 3 Proposer, exactly 3 Receiver
 
-// run gs_traces5 for exactly 3 Proposer, exactly 5 Receiver
 
 
 pred all_matched {
