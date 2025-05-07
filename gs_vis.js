@@ -9,7 +9,7 @@ let proposerGrid = new Grid({
     cell_size: {x_size: 120, y_size: 60},
     grid_dimensions: {x_size: 1, y_size: proposerAtoms.length}
 })
-stage.add(proposerGrid)
+stage.add(proposerGrid) 
 
 let receiverGrid = new Grid({
     grid_location: {x: 300, y:50},
