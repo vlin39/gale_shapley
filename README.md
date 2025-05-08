@@ -1,5 +1,9 @@
 # gale_shapley
 
+The problem of stable matching.
+
+One algorithm to address the 
+
 The Gale-Shapley algorithm is ...
 - stable matching
 - mysogynistic history
