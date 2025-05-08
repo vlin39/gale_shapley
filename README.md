@@ -51,7 +51,8 @@ This is stable matching
 
 ### Sigs
 
-### ???
+### Predicates 
+We'll use these to constrain the ...
 
 ## Temporal version
 
@@ -61,13 +62,25 @@ Tests: gs_temporal_tests.frg
 
 ### Sigs
 
-### Init
+### Initial State
 
-### Transition
+### Transition Predicates
+
+### Design Decisions
+do nothing is kinda like the end state, in this case we focus on only checking if all the proposers are matched. This fits with the pseudocode. 
+
+### Traces
 
 ## To run
 - https://csci1710.github.io/forge-documentation/getting-started/installation.html
 - Go to file in VSCode--green arrow, upper-right
+
+```
+option max_tracelength 8
+option min_tracelength 6
+```
+
+`option test_keep last`
 
 Visualizations
 Theme: theme.json
@@ -78,6 +91,8 @@ Helper functions:
 
 ## Visualizations
 Theme: theme.json
+
+gs_vis.js
 
 CND YAML 
 ```
@@ -96,5 +111,5 @@ directives:
       field: r_preferences
   - attribute:
       field: p_preferences
-
 ```
+
