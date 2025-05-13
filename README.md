@@ -134,8 +134,9 @@ sig Receiver extends Person {
 
 ### Initial State
 
-wellformed_preferences
-no match
+`wellformed_preferences`
+
+`no match`
 
 ### Transition Predicates
 ```
