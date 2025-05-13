@@ -4,10 +4,10 @@
 The **stable matching problem** involves finding a way to pair individuals, usually from two equally sized sets, based on ranked preferences, such that no two individuals would rather be with each other than with their assigned partners. Each individual ranks every member of the opposite group in order of preference.
 
 A matching is **stable** if:
-- Every individual is matched.
-- There are no two people (a proposer and a receiver) who would both prefer to be with each other than with their current matches. Such a pair is called a **blocking pair**.
+1. Every individual is matched.
+2. There are no two people who would both prefer to be with each other than with their current matches. Such a pair is called a **blocking pair**.
 
-The problem applies to many real-world domains:
+The problem applies to many real-world domains, such as:
 - College admissions
 - Medical residency placements
 - Job recruiting
