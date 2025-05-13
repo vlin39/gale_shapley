@@ -1,7 +1,7 @@
 # gale_shapley
 ## The Problem of Stable Matching
 
-The **stable matching problem** involves finding a way to pair individuals from two equally sized sets based on ranked preferences, such that no two individuals would rather be with each other than with their assigned partners. Each individual ranks every member of the opposite group in order of preference.
+The **stable matching problem** involves finding a way to pair individuals, usually from two equally sized sets, based on ranked preferences, such that no two individuals would rather be with each other than with their assigned partners. Each individual ranks every member of the opposite group in order of preference.
 
 A matching is **stable** if:
 - Every individual is matched.
