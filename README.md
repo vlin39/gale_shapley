@@ -36,7 +36,7 @@ The algorithm was originally framed in terms of heterosexual marriage, with men 
 - Proposers always benefit, while receivers have limited agency.
 - In real-world systems, this bias can affect outcomes depending on which side is allowed to propose.
 
-Critics have described this as having a **misogynistic** or **gender-biased history**, particularly when applied without neutral terminology or consideration of fairness. Today, the terminology is generalized to "proposers" and "receivers" to reflect this more accurately.
+Today, the terminology is instead generalized to "proposers" and "receivers".
 
 For further reading:  
 https://en.wikipedia.org/wiki/Gale%E2%80%93Shapley_algorithm
