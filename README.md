@@ -70,14 +70,19 @@ This is implemented using Forge: https://csci1710.github.io/forge-documentation/
 
 See the To run section for more information. 
 
+# Code
 
-## Froglet version
+There are two types of models coded: 
+- The Froglet version is a more broad/basic version of stable matching that generates a group of stable matches.
+- The Temporal version uses a temporal transition system to model the Gale-Shapley Algorithm. 
+
+## Froglet: Stable Matching
+
+TODO: Rename this
 
 Code: gs.frg
 
 Tests: gs_tests.frg
-
-This models a group of stable matches. 
 
 ### Signatures
 ```
@@ -92,53 +97,53 @@ sig Receiver extends Person {
   r_preferences: func Proposer -> Int
 }
 ```
-- Proposer / Receiver are sets representing participants that extend Person.
+- Proposer / Receiver are sets representing participants that each extend Person.
 - Person.match: A relation representing an individual's match. Using `lone` enables the match to be none, while `one` would cause it to generate already matched.
 - Proposer.p_preferences is meant to store the proposers’ ordered preferences regarding receivers as a function that maps each Receiver to an Int. 
 - Receiver.r_preferences is the same, but for Receivers. 
 
 ### Predicates 
-We'll use these to constrain the ...
 
-`wellformed_preferences` constrains the domain of the preferences. It assumes an equal number of Proposers and Receivers, and constrains it so that no two Receivers can have the same preference by a Proposer. 
+- `wellformed_preferences` constrains the domain of the preferences. It assumes an equal number of Proposers and Receivers, and constrains it so that no two Receivers can have the same level of preference by a Proposer. 
 
-`wellformed_matches` constrains the matches. a proposer can't match to another proposer, a receiver can't match to another receiver (which should also rule out the case that someone matches themselves), two people cannot match to the same person, and a match needs to be reciprocated. 
+- `wellformed_matches` constrains the matches:
+  - A proposer can't match to another proposer, and a receiver can't match to another receiver (which should also rule out the case that someone matches themselves)
+  - Two people cannot match to the same person
+  - A match needs to be reciprocated. 
 
-`matched` ensures that everyone is matched.
+- `matched` ensures that everyone is matched.
 
-`noBetterMatch` ensures that the matching is stable--there are no two people (a proposer and a receiver) who would both prefer to be with each other than with their current matches.
+- `noBetterMatch` ensures that the matching is stable--there are no two people (a Proposer and a Receiver) who would both prefer to be with each other than with their current matches.
 
-### Tests
-
-## Temporal version
+## Temporal: Gale Shapley
 
 Code: gs_temporal.frg
 
 Tests: gs_temporal_tests.frg
 
-### Sigs
+Many things remain similar to the previous Froglet: Stable Matching model, but there are some changes. 
+
+### Signatures
 
 ```
 abstract sig Person {
   var match : lone Person
 }
-
-sig Proposer extends Person { 
-  p_preferences: func Receiver -> Int
-}
-
-sig Receiver extends Person { 
-  r_preferences: func Proposer -> Int
-}
 ```
+The Proposer and Receiver sigs remain unchanged, but since we will be modeling a series of states and building the matches, match is a var.
 
 ### Initial State
 
-`wellformed_preferences`
-
-`no match`
+We constrain the initial state to be a set of Proposers and Receivers such that the preferences are well-formed and there are no matches yet. 
+- `wellformed_preferences` - no longer assumes that the two groups must be equal, otherwise unchanged. 
+- `no match` 
 
 ### Transition Predicates
+
+- `guard_match` is a helper for the transition that takes in a Proposer and a Receiver and evaluates to true when  best_match (Forge doesn't allow for predicates to have a return value, but the parameters given are mutable
+- `gs_transition` goes through unmatched Proposers and assigns their best_match
+- 
+
 ```
 pred guard_match[p: Proposer, best_match : Receiver] {
   let free_receivers = { 
