@@ -15,7 +15,7 @@ The problem applies to many real-world domains, such as:
 
 ## The Gale–Shapley Algorithm
 
-The **Gale–Shapley algorithm**, introduced in 1962 by David Gale and Lloyd Shapley, provides a guaranteed solution to the stable matching problem. It ensures that a stable matching always exists and can be efficiently found through a process of proposals and tentative acceptances.
+The **Gale–Shapley algorithm**, introduced in 1962 by David Gale and Lloyd Shapley, provides a guaranteed solution to the stable matching problem. It ensures that a stable matching always exists and can be efficiently found through a process of proposals and acceptances.
 
 ### How It Works
 
