@@ -21,7 +21,7 @@ The **Gale–Shapley algorithm**, introduced in 1962 by David Gale and Lloyd Sha
 
 The algorithm follows an iterative process:
 - Each **proposer** starts by proposing to their most-preferred **receiver** who has not yet rejected them.
-- Each receiver tentatively holds onto the most preferred proposal they’ve received so far and rejects the others.
+- Each receiver holds onto the most preferred proposal they’ve received so far and rejects the others.
 - Rejected proposers continue down their preference list in subsequent rounds.
 - The process continues until all proposers are matched and no proposals remain unprocessed.
 
