@@ -1,15 +1,45 @@
 # gale_shapley
+## The Problem of Stable Matching
 
-The problem of stable matching.
+The **stable matching problem** involves finding a way to pair individuals from two equally sized sets based on ranked preferences, such that no two individuals would rather be with each other than with their assigned partners. Each individual ranks every member of the opposite group in order of preference.
 
-One algorithm to address the 
+A matching is **stable** if:
+- Every individual is matched.
+- There are no two people (a proposer and a receiver) who would both prefer to be with each other than with their current matches. Such a pair is called a **blocking pair**.
 
-The Gale-Shapley algorithm is ...
-- stable matching
-- mysogynistic history
-- biased
+The problem applies to many real-world domains:
+- College admissions
+- Medical residency placements
+- Job recruiting
+- School choice mechanisms
 
-https://en.wikipedia.org/wiki/Gale%E2%80%93Shapley_algorithm 
+## The Gale–Shapley Algorithm
+
+The **Gale–Shapley algorithm**, introduced in 1962 by David Gale and Lloyd Shapley, provides a guaranteed solution to the stable matching problem. It ensures that a stable matching always exists and can be efficiently found through a process of proposals and tentative acceptances.
+
+### How It Works
+
+The algorithm follows an iterative process:
+- Each **proposer** starts by proposing to their most-preferred **receiver** who has not yet rejected them.
+- Each receiver tentatively holds onto the most preferred proposal they’ve received so far and rejects the others.
+- Rejected proposers continue down their preference list in subsequent rounds.
+- The process continues until all proposers are matched and no proposals remain unprocessed.
+
+### Properties
+
+- The resulting matching is **proposer-optimal**: no proposer could get a better match in any stable pairing.
+- It is **receiver-pessimal**: each receiver gets their worst valid match among all possible stable matchings.
+
+### History and Criticism
+
+The algorithm was originally framed in terms of heterosexual marriage, with men proposing to women. This framing embeds a **gendered power imbalance**:
+- Proposers always benefit, while receivers have limited agency.
+- In real-world systems, this bias can affect outcomes depending on which side is allowed to propose.
+
+Critics have described this as having a **misogynistic** or **gender-biased history**, particularly when applied without neutral terminology or consideration of fairness. Today, the terminology is generalized to "proposers" and "receivers" to reflect this more accurately.
+
+For further reading:  
+https://en.wikipedia.org/wiki/Gale%E2%80%93Shapley_algorithm
 
 This is run in Forge...
 https://csci1710.github.io/forge-documentation/home.html
