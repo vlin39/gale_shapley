@@ -20,21 +20,21 @@ The **Gale–Shapley algorithm**, introduced in 1962 by David Gale and Lloyd Sha
 ### How It Works
 
 The algorithm follows an iterative process:
-- Each **proposer** starts by proposing to their most-preferred **receiver** who has not yet rejected them.
-- Each receiver holds onto the most preferred proposal they’ve received so far and rejects the others.
+- Each unmatched **proposer** starts by proposing to their most-preferred **receiver** who has not yet rejected them.
+- Each receiver holds onto the most preferred proposal _that they’ve received so far_ and rejects the others.
 - Rejected proposers continue down their preference list in subsequent rounds.
 - The process continues until all proposers are matched and no proposals remain unprocessed.
 
 ### Properties
 
 - The resulting matching is **proposer-optimal**: no proposer could get a better match in any stable pairing.
-- It is **receiver-pessimal**: each receiver gets their worst valid match among all possible stable matchings.
+- It is **receiver-pessimal**: it is possible for each receiver gets their worst valid match among all possible stable matchings.
 
 ### History and Criticism
 
 The algorithm was originally framed in terms of heterosexual marriage, with men proposing to women. This framing embeds a **gendered power imbalance**:
-- Proposers always benefit, while receivers have limited agency.
-- In real-world systems, this bias can affect outcomes depending on which side is allowed to propose.
+- Proposers always benefit, while receivers have limited agency. This is in spite of a common assumption that receivers would hold the power, since they have the capacity to reject proposals. 
+- In real-world systems, this bias can affect outcomes depending on who is allowed to propose.
 
 Algorithm Psuedocode: 
 ```
