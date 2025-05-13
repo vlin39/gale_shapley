@@ -36,17 +36,7 @@ The algorithm was originally framed in terms of heterosexual marriage, with men 
 - Proposers always benefit, while receivers have limited agency.
 - In real-world systems, this bias can affect outcomes depending on which side is allowed to propose.
 
-Today, the terminology is instead generalized to "proposers" and "receivers".
-
-For further reading:  
-https://en.wikipedia.org/wiki/Gale%E2%80%93Shapley_algorithm
-
-This is run in Forge...
-https://csci1710.github.io/forge-documentation/home.html
-
-See the To run section for more information. 
-
-## Algorithm Psuedocode
+Algorithm Psuedocode: 
 ```
   def gale_shapley(men, women):
       engagements = {}
@@ -71,18 +61,54 @@ See the To run section for more information.
       return engagements
 ```
 
+Today, the terminology is instead generalized to "proposers" and "receivers".
+
+For further reading:  
+https://en.wikipedia.org/wiki/Gale%E2%80%93Shapley_algorithm
+
+This is implemented using Forge: https://csci1710.github.io/forge-documentation/home.html
+
+See the To run section for more information. 
+
+
 ## Froglet version
 
 Code: gs.frg
 
 Tests: gs_tests.frg
 
-This is stable matching
+This models a group of stable matches. 
 
-### Sigs
+### Signatures
+```
+abstract sig Person {
+  match : lone Person
+}
+sig Proposer extends Person { 
+  p_preferences: func Receiver -> Int
+}
+
+sig Receiver extends Person { 
+  r_preferences: func Proposer -> Int
+}
+```
+- Proposer / Receiver are sets representing participants that extend Person.
+- Person.match: A relation representing an individual's match. Using `lone` enables the match to be none, while `one` would cause it to generate already matched.
+- Proposer.p_preferences is meant to store the proposers’ ordered preferences regarding receivers as a function that maps each Receiver to an Int. 
+- Receiver.r_preferences is the same, but for Receivers. 
 
 ### Predicates 
 We'll use these to constrain the ...
+
+`wellformed_preferences` constrains the domain of the preferences. It assumes an equal number of Proposers and Receivers, and constrains it so that no two Receivers can have the same preference by a Proposer. 
+
+`wellformed_matches` constrains the matches. a proposer can't match to another proposer, a receiver can't match to another receiver (which should also rule out the case that someone matches themselves), two people cannot match to the same person, and a match needs to be reciprocated. 
+
+`matched` ensures that everyone is matched.
+
+`noBetterMatch` ensures that the matching is stable--there are no two people (a proposer and a receiver) who would both prefer to be with each other than with their current matches.
+
+### Tests
 
 ## Temporal version
 
@@ -92,9 +118,74 @@ Tests: gs_temporal_tests.frg
 
 ### Sigs
 
+```
+abstract sig Person {
+  var match : lone Person
+}
+
+sig Proposer extends Person { 
+  p_preferences: func Receiver -> Int
+}
+
+sig Receiver extends Person { 
+  r_preferences: func Proposer -> Int
+}
+```
+
 ### Initial State
 
+wellformed_preferences
+no match
+
 ### Transition Predicates
+```
+pred guard_match[p: Proposer, best_match : Receiver] {
+  let free_receivers = { 
+    r : Receiver | no r.match
+  } | 
+  let would_prefer = {
+    r : Receiver | { 
+        some r.match
+        r.r_preferences[p] > r.r_preferences[r.match]
+      }
+  } | 
+  best_match = {
+    r1 : (free_receivers + would_prefer) | {
+      all r2 : (free_receivers + would_prefer) | {
+        p.p_preferences[r1] >= p.p_preferences[r2]
+      }
+    }
+  }
+  // no return -- so include it as a parameter
+}
+```
+
+```
+pred gs_transition {
+  some p : Proposer, best_match : Receiver | {
+    no p.match
+    guard_match[p, best_match]
+    some (best_match.match) => {
+      (best_match.match).match' = none
+    }
+    best_match.match' = p
+    p.match' = best_match
+
+    all other: Person - (p + best_match + best_match.match) | {
+      other.match' = other.match
+    }
+  }
+}
+```
+
+```
+all_p_matched_and_do_nothing {
+  all p : Proposer | {
+    some p.match
+  }
+  match' = match
+}
+```
 
 ### Design Decisions
 do nothing is kinda like the end state, in this case we focus on only checking if all the proposers are matched. This fits with the pseudocode. 
