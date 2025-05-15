@@ -223,7 +223,7 @@ EXAMPLES:
   #t
 > eventually noBetterMatch
   #t
-``
+```
 
 ### In the code
 
