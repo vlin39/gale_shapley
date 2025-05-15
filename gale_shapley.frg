@@ -1,8 +1,7 @@
 #lang forge/temporal
-// open "gs.frg"
 
-/* ALGORITHM PSEUDOCODE
-
+------- ALGORITHM PSEUDOCODE ----------------------------
+/*
   def gale_shapley(men, women):
       engagements = {}
       free_men = list(men.keys())
@@ -27,19 +26,18 @@
 
 */
 
+-------- SIGNATURES --------------------------
 abstract sig Person {
   var match : lone Person
 }
-
 sig Proposer extends Person { 
   p_preferences: func Receiver -> Int
 }
-
 sig Receiver extends Person { 
   r_preferences: func Proposer -> Int
 }
 
-
+--------- INITIAL STATE ------------------------
 pred wellformed_preferences {
   // #{Proposer} = #{Receiver}
   all p: Proposer | {
@@ -67,6 +65,8 @@ pred init {
   no match
 }
 
+------------ TRANSITIONS --------------------------------
+
 pred guard_match[p: Proposer, best_match : Receiver] {
   let free_receivers = { 
     r : Receiver | no r.match
@@ -84,7 +84,6 @@ pred guard_match[p: Proposer, best_match : Receiver] {
       }
     }
   }
-  // no return -- so include it as a parameter
 }
 
 pred gs_transition {
@@ -111,120 +110,34 @@ pred all_matched_and_do_nothing {
 }
 
 pred all_p_matched_and_do_nothing {
-  all p : Proposer, r : Receiver | {
-    some p.match
-    p.match' = p.match
-    {some r.match} => {r.match' = r.match}
-    // the above lines work
-    // this works for matching numbers even if I comment out the no r.match line
-    // so that's not working somehow in 
-    {r.match = none} => {r.match' = none}
-  }
-  // all p : Proposer | {
-  //   some p.match
-  // }
-  // match' = match
-}
-
-pred all_p_matched_and_do_nothing2 {
-  all p : Proposer | {
-    some p.match
-    p.match' = p.match
-  }
-}
-
-pred all_p_matched_and_do_nothing3 {
   all p : Proposer | {
     some p.match
   }
   match' = match
-}
-
-pred literally_do_nothing {
-  match' = match
-}
-
-pred all_available_matched {
-  (#{Proposer} >= #{Receiver}) => { #{match} = #{Proposer} }
-  (#{Proposer} <= #{Receiver}) => { #{match} = #{Receiver} }
-}
-
-pred gs_traces1 {
-  init
-  always (gs_transition or all_matched_and_do_nothing)
-}
-
-pred swap {
-  some disj p1, p2: Proposer | some r: Receiver | {
-    // should we also check for the preferences here?
-    -- state 1 -- 
-    p1.match = r
-    p2.match = none
-    r.match = p1
-    
-    -- state 2 -- 
-    p1.match' = none
-    p2.match' = r
-    r.match' = p2
-    // all other: Person - (p1 + p2 + r) | {
-    // other.match' = other.match
-  }
-}
-
-pred gs_traces2 {
-  init
-  always wellformed_matches
-  always (gs_transition or all_matched_and_do_nothing)
-}
-
-pred gs_traces3 { //unsat 
-  init
-  eventually all_available_matched 
-  always (gs_transition or do_nothing)
-}
-
-pred gs_traces4 {
-  init 
-  always (gs_transition or all_p_matched_and_do_nothing)
-}
-
-pred gs_traces5 {
-  init 
-  always (gs_transition or all_p_matched_and_do_nothing2)
-}
-
-pred gs_traces6 {
-  init 
-  always (gs_transition or all_p_matched_and_do_nothing3)
 }
 
 pred do_nothing{
   all_p_matched_and_do_nothing3
 }
+
+---------- TRACES ------------------------------------
+
 pred gs_traces {
   init 
   always (gs_transition or do_nothing)
 }
 
-
-// minimal number of states is 1 + num matches
-// how to specify num of states? 
-// not sure if there's a way to specify that two states can't be the same
-
+----------- RUN --------------------------------------
 option max_tracelength 8
-option min_tracelength 4
+option min_tracelength 2
 
-// always {match != match’ }
-three: run gs_traces for exactly 3 Proposer, exactly 3 Receiver
-four: run gs_traces for exactly 4 Proposer, exactly 4 Receiver
-five: run gs_traces for exactly 5 Proposer, exactly 5 Receiver
-
-// these run
-// run gs_traces4 for exactly 1 Proposer, exactly 1 Receiver
-// run gs_traces4 for exactly 2 Proposer, exactly 2 Receiver
-// run gs_traces4 for exactly 3 Proposer, exactly 3 Receiver
+two_matches: run gs_traces for exactly 2 Proposer, exactly 2 Receiver
+three_matches: run gs_traces for exactly 3 Proposer, exactly 3 Receiver
+four_matches: run gs_traces for exactly 4 Proposer, exactly 4 Receiver
+five_matches: run gs_traces for exactly 5 Proposer, exactly 5 Receiver
 
 
+--------- EVALUATOR HELPERS ---------------------------
 
 pred all_matched {
   all p: Person | {
@@ -280,14 +193,3 @@ pred happyProposers {
     p.p_preferences[p.match] >= p.p_preferences[r]
   }
 }
-
-// so this works
-// test expect {
-//   stable_matches: {(gs_traces and (always all_matched_and_do_nothing)) implies { noBetterMatch }} for exactly 3 Proposer, exactly 3 Receiver is checked
-//   stable_matches_solved: {(gs_traces and (always all_matched_and_do_nothing)) implies { all_available_matched }} for exactly 3 Proposer, exactly 3 Receiver is checked
-//   testing_pred1: {(gs_traces and (always all_matched_and_do_nothing)) implies { do_nothing }} for exactly 3 Proposer, exactly 3 Receiver is checked
-//   testing_pred2: {(gs_traces and (always all_matched_and_do_nothing)) implies { all_p_matched_and_do_nothing }} for exactly 3 Proposer, exactly 3 Receiver is checked
-//   testing_pred3: {gs_traces implies {
-//     (always all_matched_and_do_nothing) implies (all_available_matched)
-//   }} for exactly 3 Proposer, exactly 3 Receiver is checked
-// }
