@@ -212,10 +212,11 @@ pred gs_traces {
 // not sure if there's a way to specify that two states can't be the same
 
 option max_tracelength 8
-option min_tracelength 6
+option min_tracelength 4
 
 // always {match != match’ }
-// three: run gs_traces for exactly 3 Proposer, exactly 3 Receiver
+three: run gs_traces for exactly 3 Proposer, exactly 3 Receiver
+four: run gs_traces for exactly 4 Proposer, exactly 4 Receiver
 five: run gs_traces for exactly 5 Proposer, exactly 5 Receiver
 
 // these run
