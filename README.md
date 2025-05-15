@@ -130,6 +130,7 @@ abstract sig Person {
   var match : lone Person
 }
 ```
+
 The Proposer and Receiver sigs remain unchanged, but since we will be modeling a series of states and building the matches, match is a var.
 
 ### Initial State
@@ -140,89 +141,45 @@ We constrain the initial state to be a set of Proposers and Receivers such that 
 
 ### Transition Predicates
 
-- `guard_match` is a helper for the transition that takes in a Proposer and a Receiver and evaluates to true when  best_match (Forge doesn't allow for predicates to have a return value, but the parameters given are mutable
-- `gs_transition` goes through unmatched Proposers and assigns their best_match
-- 
-
-```
-pred guard_match[p: Proposer, best_match : Receiver] {
-  let free_receivers = { 
-    r : Receiver | no r.match
-  } | 
-  let would_prefer = {
-    r : Receiver | { 
-        some r.match
-        r.r_preferences[p] > r.r_preferences[r.match]
-      }
-  } | 
-  best_match = {
-    r1 : (free_receivers + would_prefer) | {
-      all r2 : (free_receivers + would_prefer) | {
-        p.p_preferences[r1] >= p.p_preferences[r2]
-      }
-    }
-  }
-  // no return -- so include it as a parameter
-}
-```
-
-```
-pred gs_transition {
-  some p : Proposer, best_match : Receiver | {
-    no p.match
-    guard_match[p, best_match]
-    some (best_match.match) => {
-      (best_match.match).match' = none
-    }
-    best_match.match' = p
-    p.match' = best_match
-
-    all other: Person - (p + best_match + best_match.match) | {
-      other.match' = other.match
-    }
-  }
-}
-```
-
-```
-all_p_matched_and_do_nothing {
-  all p : Proposer | {
-    some p.match
-  }
-  match' = match
-}
-```
+- `guard_match` is a helper for the transition that provides the most-preferred available Receiver for the given Proposer
+- `gs_transition` goes through unmatched Proposers and assigns their best_match. All existing matches do not change.
+- `all_p_matched_and_do_nothing` - when all proposers have a match, the matches remain unchanged between states.
 
 ### Design Decisions
-do nothing is kinda like the end state, in this case we focus on only checking if all the proposers are matched. This fits with the pseudocode. 
 
-### Traces
+- `do_nothing` is similar to our end state--in this case, we focus on only checking if all the proposers are matched. This fits with the pseudocode, and still allows for all Proposers to receive their best match when there are more Receivers than Proposers.
+- `guard_match` finds the most preferred Receiver for that Proposer out of all the candidates (with the candidates being the set of all the unmatched Receivers joined with the set of all Receivers that would prefer the given Proposer to their current match)
+- `gs_transition` goes through all Proposers without a match and finds a Receiver as their `best_match`. The Proposer and Receiver are matched, and in the case the Reciever had a previous match p : Proposer, that match is now removed.
 
-## To run
-- https://csci1710.github.io/forge-documentation/getting-started/installation.html
-- Go to file in VSCode--green arrow, upper-right
+## To run the code... 
 
-```
-option max_tracelength 8
-option min_tracelength 6
-```
+(For more detailed instructions, go to: https://csci1710.github.io/forge-documentation/running-models/sterling-visualizer.html) 
 
-`option test_keep last`
+1. Make sure Forge is installed according to the directions here (https://csci1710.github.io/forge-documentation/getting-started/installation.html). The preferred IDE is VSCode.
+2. Open a file in VSCode and go to the green arrow in the upper-right-hand corner. Click to run -- a window should appear in your browser of choice shortly. 
+3. In the upper-right-hand corner of the browser window, select a command from "Select an Available Command" and click the "Run" button. Wait until an output appears on the screen. (If you cannot see this, click on "Graph" in the upper border/heading, to the right, and then click on "Explore" in the right-most border/column, to the bottom.)
+5. In the right-most border/column, click the first option "Time". This should be towards the top of the page. Use the arrow keys to go through the states. 
 
-Visualizations
-Theme: theme.json
+### Visualizations
+Options for visualization involve using a custom theme, using JavaScript, and using CnD. For more information on using any of these, go to the documention. 
 
-Helper functions: 
-- Evaluator (lower-right), `eventually all_matched`, `eventually noBetterMatch`, etc. 
+CUSTOM THEME: ttps://csci1710.github.io/forge-documentation/running-models/sterling-visualizer.html
 
+1. Upon seeing an output in the browser window, go to the second option in the right-most border/column and click on "Theme". 
+2. In the heading of the right-hand column, go to the middle button and click on "Browse...".
+3. Provide the `theme.json` file in the project folder and click "Open".
+4. In the window, click and drag past the `Int`s to view the `Receiver` and `Proposer` boxes. (Click on the right side of the screen, then hold and drag left.)
+5. Go to "Time" in the right-most border/column and use the arrow keys to go through the states.
 
-## Visualizations
-Theme: theme.json
+JAVASCRIPT: https://csci1710.github.io/forge-documentation/sterling/custom-basics.html
 
-gs_vis.js
+1. In the upper border/heading, go to the right and click "</> Script>".
+2. Click the "<svg> button (in the blue buttons at the top of the center column)
+3. Copy in the code from gs_vis.js.
+4. To return to the default page, click on "Graph". This should be located in the upper border/heading, to the right.
 
-CND YAML 
-```
+CND: https://csci1710.github.io/forge-documentation/sterling/cnd.html
+```yaml
 constraints:
   - orientation:
       selector: (Receiver -> Proposer) & match
@@ -239,4 +196,44 @@ directives:
   - attribute:
       field: p_preferences
 ```
+
+You can also view everything as a table:
+1. In the upper border/heading, go to the right and click "Table".
+2. To return to the default page, click on "Graph". This should be located in the upper border/heading, to the right.
+
+### Helper functions: 
+
+When using `run`, you can use predicates to evaluate the states provided. Instructions and examples are provided below. 
+
+1. Click on "Evaluator". This should be towards to bottom of the right-most border/column.
+2. You should see something like `> Enter an expression` in the right hand column. Here, you can run various predicates from the code. By default, a predicate will evaluate the first state.
+3. You will see #t if the predicate evaluates as True and #f if the predicate evaluates as false.
+
+```
+EXAMPLES:
+> wellformed_preferences
+  #t
+> no match
+  #t
+> all_matched
+  #f
+> eventually all_matched
+  #t
+> eventually {all p: Person | { p.match != none }}
+  #t
+> eventually noBetterMatch
+  #t
+``
+
+### In the code
+
+Forge defaults to a trace length of 4 states. To run for more states (for example, to run the Gale Shapley model for 5+ Proposers and 5+ Recievers), use the following code. Make sure to set the max_tracelength before the min_tracelength. 
+```
+option max_tracelength 8
+option min_tracelength 6
+```
+
+When running tests, in order to show which tests broke only after running all the tests, use `option test_keep last`. 
+
+
 
