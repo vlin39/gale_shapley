@@ -36,7 +36,7 @@ The algorithm was originally framed in terms of heterosexual marriage, with men 
 - Proposers always benefit, while receivers have limited agency. This is in spite of a common assumption that receivers would hold the power, since they have the capacity to reject proposals. 
 - In real-world systems, this bias can affect outcomes depending on who is allowed to propose.
 
-Algorithm Psuedocode: 
+#### Algorithm Psuedocode: 
 ```
   def gale_shapley(men, women):
       engagements = {}
@@ -78,13 +78,12 @@ There are two types of models coded:
 
 ## Froglet: Stable Matching
 
-TODO: Rename this
-
 Code: gs.frg
 
 Tests: gs_tests.frg
 
 ### Signatures
+
 ```
 abstract sig Person {
   match : lone Person
@@ -97,6 +96,7 @@ sig Receiver extends Person {
   r_preferences: func Proposer -> Int
 }
 ```
+
 - Proposer / Receiver are sets representing participants that each extend Person.
 - Person.match: A relation representing an individual's match. Using `lone` enables the match to be none, while `one` would cause it to generate already matched.
 - Proposer.p_preferences is meant to store the proposers’ ordered preferences regarding receivers as a function that maps each Receiver to an Int. 
@@ -163,7 +163,7 @@ We constrain the initial state to be a set of Proposers and Receivers such that 
 ### Visualizations
 Options for visualization involve using a custom theme, using JavaScript, and using CnD. For more information on using any of these, go to the documention. 
 
-CUSTOM THEME: ttps://csci1710.github.io/forge-documentation/running-models/sterling-visualizer.html
+**Custom Theme:** https://csci1710.github.io/forge-documentation/running-models/sterling-visualizer.html
 
 1. Upon seeing an output in the browser window, go to the second option in the right-most border/column and click on "Theme". 
 2. In the heading of the right-hand column, go to the middle button and click on "Browse...".
@@ -171,14 +171,15 @@ CUSTOM THEME: ttps://csci1710.github.io/forge-documentation/running-models/sterl
 4. In the window, click and drag past the `Int`s to view the `Receiver` and `Proposer` boxes. (Click on the right side of the screen, then hold and drag left.)
 5. Go to "Time" in the right-most border/column and use the arrow keys to go through the states.
 
-JAVASCRIPT: https://csci1710.github.io/forge-documentation/sterling/custom-basics.html
+**JavaScript:** https://csci1710.github.io/forge-documentation/sterling/custom-basics.html
 
 1. In the upper border/heading, go to the right and click "</> Script>".
 2. Click the "<svg> button (in the blue buttons at the top of the center column)
 3. Copy in the code from gs_vis.js.
 4. To return to the default page, click on "Graph". This should be located in the upper border/heading, to the right.
 
-CND: https://csci1710.github.io/forge-documentation/sterling/cnd.html
+**CND:** https://csci1710.github.io/forge-documentation/sterling/cnd.html
+
 ```yaml
 constraints:
   - orientation:
@@ -197,7 +198,7 @@ directives:
       field: p_preferences
 ```
 
-You can also view everything as a table:
+You can also view everything as a **table**:
 1. In the upper border/heading, go to the right and click "Table".
 2. To return to the default page, click on "Graph". This should be located in the upper border/heading, to the right.
 
