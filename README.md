@@ -78,9 +78,9 @@ There are two types of models coded:
 
 ## Froglet: Stable Matching
 
-Code: stable_matching.frg
+Code: `stable_matching.frg`
 
-Tests: stable_matching_tests.frg
+Tests: `stable_matching_tests.frg`
 
 ### Signatures
 
@@ -97,10 +97,10 @@ sig Receiver extends Person {
 }
 ```
 
-- Proposer / Receiver are sets representing participants that each extend Person.
-- Person.match: A relation representing an individual's match. Using `lone` enables the match to be none, while `one` would cause it to generate already matched.
-- Proposer.p_preferences is meant to store the proposers’ ordered preferences regarding receivers as a function that maps each Receiver to an Int. 
-- Receiver.r_preferences is the same, but for Receivers. 
+- `Proposer` / `Receiver` are sets representing participants that each extend Person.
+- `Person.match`: A relation representing an individual's match. Using `lone` enables the match to be none, while `one` would cause it to generate already matched.
+- `Proposer.p_preferences` is meant to store the proposers’ ordered preferences regarding receivers as a function that maps each Receiver to an Int. 
+- `Receiver.r_preferences` is the same for Receivers. 
 
 ### Predicates 
 
@@ -117,11 +117,11 @@ sig Receiver extends Person {
 
 ## Temporal: Gale Shapley
 
-Code: gale_shapley.frg
+Code: `gale_shapley.frg`
 
-Tests: gale_shapley_tests.frg
+Tests: `gale_shapley_tests.frg`
 
-Many things remain similar to the previous Froglet: Stable Matching model, but there are some changes. 
+Many things remain similar to the previous **Froglet: Stable Matching** model, but there are some changes. 
 
 ### Signatures
 
@@ -131,7 +131,7 @@ abstract sig Person {
 }
 ```
 
-The Proposer and Receiver sigs remain unchanged, but since we will be modeling a series of states and building the matches, match is a var.
+The `Proposer` and `Receiver` sigs remain unchanged, but since we will be modeling a series of states and building the matches, `match` is a `var`.
 
 ### Initial State
 
