@@ -78,9 +78,9 @@ There are two types of models coded:
 
 ## Froglet: Stable Matching
 
-Code: gs.frg
+Code: stable_matching.frg
 
-Tests: gs_tests.frg
+Tests: stable_matching_tests.frg
 
 ### Signatures
 
@@ -117,9 +117,9 @@ sig Receiver extends Person {
 
 ## Temporal: Gale Shapley
 
-Code: gs_temporal.frg
+Code: gale_shapley.frg
 
-Tests: gs_temporal_tests.frg
+Tests: gale_shapley_tests.frg
 
 Many things remain similar to the previous Froglet: Stable Matching model, but there are some changes. 
 
@@ -161,6 +161,7 @@ We constrain the initial state to be a set of Proposers and Receivers such that 
 5. In the right-most border/column, click the first option "Time". This should be towards the top of the page. Use the arrow keys to go through the states. 
 
 ### Visualizations
+
 Options for visualization involve using a custom theme, using JavaScript, and using CnD. For more information on using any of these, go to the documention. 
 
 **Custom Theme:** https://csci1710.github.io/forge-documentation/running-models/sterling-visualizer.html
