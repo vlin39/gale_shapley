@@ -68,7 +68,7 @@ https://en.wikipedia.org/wiki/Gale%E2%80%93Shapley_algorithm
 
 This is implemented using Forge: https://csci1710.github.io/forge-documentation/home.html
 
-See the To run section for more information. 
+See the **To run** section for more information. 
 
 # Code
 
