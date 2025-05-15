@@ -229,7 +229,7 @@ EXAMPLES:
 
 ### In the code
 
-Forge defaults to a trace length of 4 states. To run for more states (for example, to run the Gale Shapley model for 5+ Proposers and 5+ Recievers), use the following code. Make sure to set the max_tracelength before the min_tracelength.
+Forge defaults to a trace length of 4 states. To run for more states (for example, to run the Gale Shapley model for 5+ Proposers and 5+ Recievers), use the following code. Make sure to set the `max_tracelength` before the `min_tracelength` -- it causes errors when the `min_trancelength` > `max_tracelength`.
 
 ```
 option max_tracelength 8
